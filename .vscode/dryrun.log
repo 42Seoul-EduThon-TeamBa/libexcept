@@ -1,0 +1,5 @@
+make: Entering directory `/Users/kimjeongjun/cjump_tutorial'
+make: Leaving directory `/Users/kimjeongjun/cjump_tutorial'
+ 
+make: *** No rule to make target `libexcet', needed by `libexcet.a'.
+
