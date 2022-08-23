@@ -51,7 +51,7 @@ static libexcp_list_node *get_last_node(libexcp_context_storage * strg) {
 }
 
 int add_exception(libexcp_context_storage* strg, char *name, char *message) {
-    libexcp_list_node *nptr = get_last_node(strg);
+    libexcp_list_node *last_nptr = get_last_node(strg);
     libexcp_list_node *new_nptr = (libexcp_list_node *)calloc(sizeof(libexcp_list_node), 1);
     if (new_nptr == NULL) {
         return -1;
@@ -64,13 +64,14 @@ int add_exception(libexcp_context_storage* strg, char *name, char *message) {
         free(new_nptr);
         return -1;
     }
+    new_nptr = strg->size + 1;
     new_nptr->state = EXCEPT_LIST_NODE_STATUS_NORMAL;
-    nptr->next = new_nptr;
+    last_nptr->next = new_nptr;
     return 0;
 };
 
 int add_exception_func(libexcp_context_storage* strg, char *name, char *message, void (*handler)(void *)) {
-    libexcp_list_node *nptr = get_last_node(strg);
+    libexcp_list_node *last_nptr = get_last_node(strg);
     libexcp_list_node *new_nptr = (libexcp_list_node *)calloc(sizeof(libexcp_list_node), 1);
     if (new_nptr == NULL) {
         return -1;
@@ -83,14 +84,15 @@ int add_exception_func(libexcp_context_storage* strg, char *name, char *message,
         free(new_nptr);
         return -1;
     }
+    new_nptr = strg->size + 1;
     new_nptr->state = EXCEPT_LIST_NODE_STATUS_HANDLED;
     new_nptr->handler = handler;
-    nptr->next = new_nptr;
+    last_nptr->next = new_nptr;
     return 0;
 };
 
 int add_exception_formats(libexcp_context_storage* strg, char *name, char *message, ...) {
-    libexcp_list_node *nptr = get_last_node(strg);
+    libexcp_list_node *last_nptr = get_last_node(strg);
     libexcp_list_node *new_nptr = (libexcp_list_node *)calloc(sizeof(libexcp_list_node), 1);
     if (new_nptr == NULL) {
         return -1;
@@ -103,11 +105,12 @@ int add_exception_formats(libexcp_context_storage* strg, char *name, char *messa
         free(new_nptr);
         return -1;
     }
+    new_nptr = strg->size + 1;
     new_nptr->state = EXCEPT_LIST_NODE_STATUS_FORMAT;
     va_list args;
     va_start(args, message);
     new_nptr->formats = args;
-    nptr->next = new_nptr;
+    last_nptr->next = new_nptr;
     return 0;
     
 };
@@ -168,4 +171,3 @@ void delete_exception(libexcp_context_storage* strg, char *name) {
         nptr = nptr->next;
     }
 };
-
